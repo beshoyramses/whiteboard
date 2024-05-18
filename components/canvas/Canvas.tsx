@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useContext, useState } from 'react';
 import { SelectedTool } from '../context/SelectedTool';
 import { SelectedColor } from '../context/Color';
 import { fabric } from 'fabric';
-
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
@@ -34,9 +33,8 @@ const Canvas = () => {
     currentColorRef.current = currentColor;
     if (fabricCanvasRef.current) {
       if (currentToolRef.current === 'Pen') {
-        fabricCanvasRef.current.freeDrawingBrush.stroke = currentColorRef.current;
+        fabricCanvasRef.current.freeDrawingBrush.color = currentColorRef.current;
       } else if (selectedObject) {
-        // Check if selected object is a path (brush stroke)
         if (selectedObject.type === 'path') {
           selectedObject.set('stroke', currentColorRef.current);
         } else {
@@ -47,7 +45,6 @@ const Canvas = () => {
       }
     }
   }, [currentColor]);
-  
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
@@ -177,8 +174,7 @@ const Canvas = () => {
 
   const handleObjectDeselected = () => {
     setSelectedObject(null);
-  };
-
+  }; 
   return (
     <div style={{ position: 'relative', height: '100vh' }}>
       <canvas
@@ -189,4 +185,4 @@ const Canvas = () => {
   );
 };
 
-export default Canvas;
+export default Canvas; 
