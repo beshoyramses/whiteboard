@@ -1,0 +1,18 @@
+.sidebar {
+    background-color: #3e3e3e !important;
+    width: 100%;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+ul {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+ul li button {
+    color: #fff;
+  }

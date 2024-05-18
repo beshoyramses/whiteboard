@@ -1,14 +1,20 @@
 "use client";
 
-import { createContext,useState } from "react";
+import React, { createContext, useState, ReactNode } from 'react';
 
-export const SelectedTool = createContext({
-    currentTool: null,
-    setCurrentTool: () => null,
-})
+interface ToolContextType {
+  currentTool: string | null;
+  setCurrentTool: (tool: string | null) => void;
+}
 
-export const SelectedToolProvider = ({ children }) => {
-    const [currentTool, setCurrentTool] = useState(null);
-    const value = { currentTool, setCurrentTool};
-    return <SelectedTool.Provider value={value}>{children}</SelectedTool.Provider>
-}  
+export const SelectedTool = createContext<ToolContextType | undefined>(undefined);
+
+export const SelectedToolProvider = ({ children }: { children: ReactNode }) => {
+  const [currentTool, setCurrentTool] = useState<string | null>(null);
+
+  return (
+    <SelectedTool.Provider value={{ currentTool, setCurrentTool }}>
+      {children}
+    </SelectedTool.Provider>
+  );
+};
