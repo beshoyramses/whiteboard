@@ -3,12 +3,15 @@
 import React, { useRef, useEffect, useContext, useState } from 'react';
 import { SelectedTool } from '../context/SelectedTool';
 import { SelectedColor } from '../context/Color';
+import { DrawSettingsContext } from '../context/drawSettings'; // Update the path as needed
 import { fabric } from 'fabric';
+
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const { currentTool, setCurrentTool } = useContext(SelectedTool);
   const { currentColor } = useContext(SelectedColor);
+  const { currentSize, isFilled } = useContext(DrawSettingsContext) || {};
   const isDrawingRef = useRef(false);
   const startPosRef = useRef({ x: 0, y: 0 });
   const currentShapeRef = useRef<fabric.Object | null>(null);
@@ -22,12 +25,12 @@ const Canvas = () => {
       if (currentTool === 'Pen') {
         fabricCanvasRef.current.isDrawingMode = true;
         fabricCanvasRef.current.freeDrawingBrush.color = currentColorRef.current;
-        fabricCanvasRef.current.freeDrawingBrush.width = 4;
+        fabricCanvasRef.current.freeDrawingBrush.width = currentSize || 2;
       } else {
         fabricCanvasRef.current.isDrawingMode = false;
       }
     }
-  }, [currentTool]);
+  }, [currentTool, currentSize]);
 
   useEffect(() => {
     currentColorRef.current = currentColor;
@@ -37,8 +40,9 @@ const Canvas = () => {
       } else if (selectedObject) {
         if (selectedObject.type === 'path') {
           selectedObject.set('stroke', currentColorRef.current);
-        } else {
+        } else if (isFilled) {
           selectedObject.set('fill', currentColorRef.current);
+        } else {
           selectedObject.set('stroke', currentColorRef.current);
         }
         fabricCanvasRef.current.renderAll();
@@ -92,6 +96,21 @@ const Canvas = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleImportImage = (event) => {
+      const imageSrc = event.detail;
+      fabric.Image.fromURL(imageSrc, (img) => {
+        fabricCanvasRef.current.add(img);
+        fabricCanvasRef.current.renderAll();
+      });
+    };
+
+    window.addEventListener('importImage', handleImportImage);
+    return () => {
+      window.removeEventListener('importImage', handleImportImage);
+    };
+  }, []);
+
   const handleMouseDown = (event) => {
     if (currentToolRef.current === 'select' || currentToolRef.current === 'Pen') return;
 
@@ -103,9 +122,9 @@ const Canvas = () => {
     const shapeOptions = {
       left: pointer.x,
       top: pointer.y,
-      fill: currentColorRef.current,
+      fill: isFilled ? currentColorRef.current : 'transparent',
       stroke: currentColorRef.current,
-      strokeWidth: 2,
+      strokeWidth: currentSize || 2,
     };
 
     if (currentToolRef.current === 'rectangle') {
@@ -121,7 +140,7 @@ const Canvas = () => {
     } else if (currentToolRef.current === 'Text') {
       shape = new fabric.Textbox('Sample Text', {
         ...shapeOptions,
-        fontSize: 20,
+        fontSize: currentSize || 20,
         fill: currentColorRef.current,
       });
     }
@@ -174,7 +193,8 @@ const Canvas = () => {
 
   const handleObjectDeselected = () => {
     setSelectedObject(null);
-  }; 
+  };
+
   return (
     <div style={{ position: 'relative', height: '100vh' }}>
       <canvas
@@ -185,4 +205,4 @@ const Canvas = () => {
   );
 };
 
-export default Canvas; 
+export default Canvas;

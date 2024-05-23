@@ -1,3 +1,6 @@
+"use client";
+
+
 import React, {useContext} from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined'; // Import the Material UI icons

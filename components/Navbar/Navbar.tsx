@@ -1,3 +1,6 @@
+"use client";
+
+
 import React, {useContext} from 'react';
 import "./navbar.css";
 import * as Icons from '@mui/icons-material';

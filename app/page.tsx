@@ -1,9 +1,10 @@
 "use client";
+
 import "./globals.css";
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
-import Canvas from '../components/Canvas/Canvas';
-import Sidebar from "../components/sidebar/sidebar";
+import Canvas from '../components/canvas/Canvas';
+import Sidebar from "../components/sidebar/Sidebar.tsx";
 
 export default function Home() {
   const [selectedTool, setSelectedTool] = useState(null);
